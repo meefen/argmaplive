@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+
+# Recordings and their outputs belong outside this folder (e.g. ~/Documents/captions);
+# these catch any made here by accident.
+*.txt
+*.jsonl
+*.argdown
+*.html
+*-figures/
