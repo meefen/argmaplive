@@ -210,6 +210,12 @@ footer { margin-top: 4rem; font: 0.9rem/1.5 var(--sans); color: var(--muted); }
 """
 
 
+LEGEND = ('<div class="legend"><span><span class="chip question">Question</span> <span class="chip claim">Claim</span> '
+          '<span class="chip evidence">Evidence</span></span>'
+          '<span><span class="arrow supports"></span>supports</span><span><span class="arrow challenges"></span>challenges</span>'
+          '<span><span class="arrow answers"></span>answers</span><span>dashed box: low confidence or shown in another map</span></div>')
+
+
 def time_link(video, at):
     if not at:
         return ""
@@ -335,10 +341,6 @@ def main():
 
     css = (QUICK_DOCS / "quickdoc.css").read_text(encoding="utf-8") if (QUICK_DOCS / "quickdoc.css").exists() else ""
     theme = (QUICK_DOCS / "theme.html").read_text(encoding="utf-8") if (QUICK_DOCS / "theme.html").exists() else ""
-    legend = ('<div class="legend"><span><span class="chip question">Question</span> <span class="chip claim">Claim</span> '
-              '<span class="chip evidence">Evidence</span></span>'
-              '<span><span class="arrow supports"></span>supports</span><span><span class="arrow challenges"></span>challenges</span>'
-              '<span><span class="arrow answers"></span>answers</span><span>dashed box: low confidence or shown in another map</span></div>')
     page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -358,7 +360,7 @@ def main():
 <p class="date">Source: {source_html} · {counts['question']} questions, {counts['claim']} claims, {counts['evidence']} pieces of evidence</p>
 </header>
 <div class="note"><p><strong>How this was made</strong> {about}</p><p>{purpose}</p></div>
-{legend}
+{LEGEND}
 <nav id="TOC"><ul>{''.join(toc)}</ul></nav>
 {chr(10).join(body)}
 <footer>{date.today().strftime("%B %-d, %Y")}</footer>

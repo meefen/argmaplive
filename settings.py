@@ -22,6 +22,7 @@ DEFAULTS = {
     "GEMINI_MODEL": "gemini-4-hydrogen",
     "GEMINI_API_KEY": "",
     "SITE_DIR": "~/src/quick-docs",
+    "SESSIONS_DIR": "~/Documents/captions",        # session.py makes one folder per session here
 }
 
 

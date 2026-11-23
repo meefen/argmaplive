@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900"
+     font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#1f2124">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9a9a9a"/>
+    </marker>
+    <marker id="loop" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d9720f"/>
+    </marker>
+    <marker id="tiny" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4f9446"/>
+    </marker>
+    <style>
+      .card { fill: #ffffff; stroke: #e2ded5; stroke-width: 1.5; }
+      .step { font-size: 34px; font-weight: 700; }
+      .num { font-size: 19px; font-weight: 700; fill: #fff; text-anchor: middle; }
+      .desc { font-size: 22px; fill: #33363b; }
+      .tool { font-size: 17px; fill: #7a7d83; }
+      .badge { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-anchor: middle; }
+      .chip { font-size: 12.5px; font-weight: 700; letter-spacing: 0.05em; text-anchor: middle; fill: #222; }
+      .foot { font-size: 18px; fill: #6b6e74; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#fbfaf7"/>
+
+  <!-- title -->
+  <text x="75" y="96" font-size="44" font-weight="700">How the live argument map works</text>
+  <text x="75" y="141" font-size="22" fill="#6b6e74">From our talk to a map of questions, claims and evidence, refreshed every minute while we talk</text>
+
+  <!-- arrows between steps -->
+  <g stroke="#9a9a9a" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <line x1="403" y1="385" x2="443" y2="385"/>
+    <line x1="779" y1="385" x2="819" y2="385"/>
+    <line x1="1155" y1="385" x2="1195" y2="385"/>
+  </g>
+
+  <!-- 1 Talk -->
+  <g>
+    <rect class="card" x="75" y="190" width="320" height="390" rx="14"/>
+    <rect x="75" y="190" width="320" height="8" rx="4" fill="#b9b3a7"/>
+    <circle cx="113" cy="242" r="20" fill="#8a847a"/><text class="num" x="113" y="249">1</text>
+    <text class="step" x="143" y="254">Talk</text>
+    <rect x="309" y="229" width="68" height="24" rx="12" fill="#f1eee8" stroke="#b9b3a7"/>
+    <text class="badge" x="343" y="245.5" fill="#6f695e">PEOPLE</text>
+    <text class="desc" x="97" y="312">We discuss as usual.</text>
+    <text class="desc" x="97" y="342">A room microphone</text>
+    <text class="desc" x="97" y="372">picks up the talk.</text>
+    <g fill="#d9d3c7">
+      <circle cx="175" cy="487" r="19"/><path d="M149,535 a26,24 0 0 1 52,0 z"/>
+      <circle cx="235" cy="477" r="19"/><path d="M209,525 a26,24 0 0 1 52,0 z"/>
+      <circle cx="295" cy="487" r="19"/><path d="M269,535 a26,24 0 0 1 52,0 z"/>
+    </g>
+    <path d="M262,424 h52 a9,9 0 0 1 9,9 v16 a9,9 0 0 1 -9,9 h-34 l-12,10 v-10 h-6 a9,9 0 0 1 -9,-9 v-16 a9,9 0 0 1 9,-9 z"
+          fill="#fff" stroke="#b9b3a7" stroke-width="1.5"/>
+    <text x="288" y="447" font-size="15" fill="#8a847a" text-anchor="middle">…</text>
+    <text class="tool" x="97" y="560">Room microphone</text>
+  </g>
+
+  <!-- 2 Listen -->
+  <g>
+    <rect class="card" x="451" y="190" width="320" height="390" rx="14"/>
+    <rect x="451" y="190" width="320" height="8" rx="4" fill="#7b5ea7"/>
+    <circle cx="489" cy="242" r="20" fill="#7b5ea7"/><text class="num" x="489" y="249">2</text>
+    <text class="step" x="519" y="254">Listen</text>
+    <rect x="673" y="229" width="80" height="24" rx="12" fill="#efe9f7" stroke="#7b5ea7"/>
+    <text class="badge" x="713" y="245.5" fill="#5d4486">AI MODEL</text>
+    <text class="desc" x="473" y="312">A speech-recognition</text>
+    <text class="desc" x="473" y="342">model turns speech into</text>
+    <text class="desc" x="473" y="372">text, shown as live</text>
+    <text class="desc" x="473" y="402">captions.</text>
+    <rect x="473" y="458" width="276" height="66" rx="9" fill="#16181b"/>
+    <text x="490" y="484" font-size="16" fill="#7d8087">…keeps track of what</text>
+    <text x="490" y="511" font-size="19" font-weight="600" fill="#f4f4f2">we said about feedback</text>
+    <text class="tool" x="473" y="560">whisper.cpp · on this laptop</text>
+  </g>
+
+  <!-- 3 Read -->
+  <g>
+    <rect class="card" x="827" y="190" width="320" height="390" rx="14"/>
+    <rect x="827" y="190" width="320" height="8" rx="4" fill="#7b5ea7"/>
+    <circle cx="865" cy="242" r="20" fill="#7b5ea7"/><text class="num" x="865" y="249">3</text>
+    <text class="step" x="895" y="254">Read</text>
+    <rect x="1049" y="229" width="80" height="24" rx="12" fill="#efe9f7" stroke="#7b5ea7"/>
+    <text class="badge" x="1089" y="245.5" fill="#5d4486">AI MODEL</text>
+    <text class="desc" x="849" y="312">Every minute, a language</text>
+    <text class="desc" x="849" y="342">model reads the new text</text>
+    <text class="desc" x="849" y="372">and picks out questions,</text>
+    <text class="desc" x="849" y="402">claims, evidence and</text>
+    <text class="desc" x="849" y="432">how they connect.</text>
+    <rect x="849" y="458" width="82" height="26" rx="5" fill="#fde6cf" stroke="#d9720f" stroke-width="1.5"/>
+    <text class="chip" x="890" y="475.5">QUESTION</text>
+    <rect x="939" y="458" width="60" height="26" rx="5" fill="#dde8f4" stroke="#4e79a7" stroke-width="1.5"/>
+    <text class="chip" x="969" y="475.5">CLAIM</text>
+    <rect x="1007" y="458" width="84" height="26" rx="5" fill="#e1f0dd" stroke="#4f9446" stroke-width="1.5"/>
+    <text class="chip" x="1049" y="475.5">EVIDENCE</text>
+    <text class="tool" x="849" y="536">Qwen on this laptop,</text>
+    <text class="tool" x="849" y="560">or Gemini in the cloud</text>
+  </g>
+
+  <!-- 4 Draw -->
+  <g>
+    <rect class="card" x="1203" y="190" width="320" height="390" rx="14"/>
+    <rect x="1203" y="190" width="320" height="8" rx="4" fill="#b9b3a7"/>
+    <circle cx="1241" cy="242" r="20" fill="#8a847a"/><text class="num" x="1241" y="249">4</text>
+    <text class="step" x="1271" y="254">Draw</text>
+    <rect x="1443" y="229" width="62" height="24" rx="12" fill="#f1eee8" stroke="#b9b3a7"/>
+    <text class="badge" x="1474" y="245.5" fill="#6f695e">NO AI</text>
+    <text class="desc" x="1225" y="312">Ordinary code draws</text>
+    <text class="desc" x="1225" y="342">them as a map that</text>
+    <text class="desc" x="1225" y="372">grows on screen.</text>
+    <rect x="1318" y="438" width="90" height="28" rx="6" fill="#fde6cf" stroke="#d9720f" stroke-width="1.5"/>
+    <rect x="1243" y="502" width="90" height="28" rx="6" fill="#dde8f4" stroke="#4e79a7" stroke-width="1.5"/>
+    <rect x="1393" y="502" width="90" height="28" rx="6" fill="#e1f0dd" stroke="#4f9446" stroke-width="1.5"/>
+    <line x1="1288" y1="502" x2="1345" y2="469" stroke="#8a8a8a" stroke-width="1.8" stroke-dasharray="5 4"/>
+    <line x1="1438" y1="502" x2="1383" y2="471" stroke="#4f9446" stroke-width="1.8" marker-end="url(#tiny)"/>
+    <text class="tool" x="1225" y="560">Graphviz · on this laptop</text>
+  </g>
+
+  <!-- feedback loop -->
+  <path d="M1363,582 V605 Q1363,625 1343,625 H255 Q235,625 235,605 V592" fill="none" stroke="#d9720f"
+        stroke-width="3" stroke-dasharray="10 7" marker-end="url(#loop)"/>
+  <text x="799" y="672" font-size="23" font-style="italic" fill="#b05e0a" text-anchor="middle">The map feeds back into the talk: What is still unanswered? What got misheard? Where do we disagree?</text>
+
+  <!-- what happens to your words -->
+  <text class="foot" x="75" y="812"><tspan font-weight="700">Your words:</tspan> audio is not recorded; the text transcript stays on this laptop (if we use Gemini, the text goes to Google for step 3).</text>
+  <text class="foot" x="75" y="842">Items are not linked to who said them. Both AI steps make mistakes, so the map is a draft to question, not a record of the session.</text>
+</svg>

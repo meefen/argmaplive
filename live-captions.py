@@ -6,7 +6,8 @@ own browser window with large text. Uses only the Python standard library.
 
 Usage:
   ./live-captions.py                         # settings from .env, continuous mode
-  ./live-captions.py --save talk.txt         # also append finished lines to a file
+  ./live-captions.py --save talk.txt         # also save finished lines to a new file
+  ./live-captions.py --save talk.txt --append   # continue an existing transcript
   ./live-captions.py --list-mics             # show the microphones and their numbers
   ./live-captions.py --mic Logi              # pick the microphone by part of its name
   ./live-captions.py -m models/ggml-base.en.bin --step 0 --length 8000 -vth 0.6
@@ -33,6 +34,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import files
 import settings
 
 WHISPER_DIR = settings.path("WHISPER_CPP_DIR")
@@ -224,6 +226,25 @@ def pick_mic(name, required):
     return None
 
 
+def open_transcript(name, append):
+    """The --save file, opened for writing. Creates it (and its folder) if needed. An
+    existing file that has text is only added to with --append, never overwritten. A new
+    transcript is refused while an old <name>.mined.jsonl sits next to it, since the miner
+    would carry on from that file."""
+    path = Path(name).expanduser()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    is_new = not path.exists() or path.stat().st_size == 0
+    if is_new:
+        mined = path.with_suffix(".mined.jsonl")
+        if mined.exists() and mined.stat().st_size > 0:
+            sys.exit(files.leftover_message(mined, path))
+    if not is_new and not append:
+        sys.exit(f"{files.tilde(path)} already exists, so it was left as is. Choose a new name, e.g.\n"
+                 f"  --save {files.tilde(files.dated_name(path))}\n"
+                 "or add --append to continue that transcript.")
+    return open(path, "a", encoding="utf-8")
+
+
 def open_window(url):
     # Chromium browsers can open a page as a standalone app window (no tabs or address bar).
     for app in ("Google Chrome", "Brave Browser", "Microsoft Edge"):
@@ -240,7 +261,9 @@ def main():
                f"Settings: {settings.ENV_FILE}",
         allow_abbrev=False)
     ap.add_argument("--port", type=int, default=8765, help="local web port (default 8765)")
-    ap.add_argument("--save", metavar="FILE", help="append finished lines to FILE")
+    ap.add_argument("--save", metavar="FILE",
+                    help="save finished lines to FILE, creating it and its folder; an existing FILE is left alone")
+    ap.add_argument("--append", action="store_true", help="with --save: add to FILE if it already exists")
     ap.add_argument("--no-window", action="store_true", help="don't open a browser window")
     ap.add_argument("--mic", metavar="NAME", help="microphone by part of its name, e.g. Logi (default: MIC in .env)")
     ap.add_argument("--list-mics", action="store_true", help="list the microphones and exit")
@@ -255,6 +278,9 @@ def main():
     if not STREAM_BIN.exists():
         sys.exit(f"{STREAM_BIN} not found. Set WHISPER_CPP_DIR in {settings.ENV_FILE} to your whisper.cpp\n"
                  "folder, built with -DWHISPER_SDL2=ON.")
+    save = open_transcript(args.save, args.append) if args.save else None
+    if save:
+        print(f"Saving to {files.tilde(Path(save.name))}" + (" (adding to the end)" if save.tell() else ""))
     if not any(a in ("-c", "--capture") for a in stream_args):
         name = args.mic if args.mic is not None else settings.get("MIC")
         index = pick_mic(name, required=args.mic is not None) if name else None
@@ -269,8 +295,6 @@ def main():
     server.daemon_threads = True
     url = f"http://127.0.0.1:{server.server_address[1]}/"
     threading.Thread(target=server.serve_forever, daemon=True).start()
-
-    save = open(args.save, "a", encoding="utf-8") if args.save else None
 
     def on_line(text):
         print(text, flush=True)

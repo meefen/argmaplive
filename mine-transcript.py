@@ -12,7 +12,7 @@ With --gemini it uses Google's Gemini API instead; put GEMINI_API_KEY=... in the
 Usage:
   ./mine-transcript.py talk.txt                       # follow talk.txt as it grows
   ./mine-transcript.py talk.txt --gemini              # same, with GEMINI_MODEL
-  ./mine-transcript.py talk.txt --topic "Seminar on feedback; names: Scardamalia, Bereiter"
+  ./mine-transcript.py talk.txt --topic "Seminar on feedback; names: Piaget, Skinner"
   ./mine-transcript.py recording.txt --once           # mine a finished transcript and exit
 
 Output goes to talk.mined.jsonl next to the transcript unless -o is given.
@@ -31,6 +31,7 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
+import files
 import settings
 
 OLLAMA_MODEL = settings.get("OLLAMA_MODEL")
@@ -233,6 +234,7 @@ class Miner:
         self.pending = []  # (line, end byte offset, arrival time) not yet mined
         self.read_pos, self.batch, self.context = 0, 0, ""
         self.timestamped = False  # transcript lines carry recording timestamps
+        self.warned_shorter = False
         if args.gemini:
             self.ask = lambda system, user: ask_gemini(args.api_key, args.model, system, user)
         else:
@@ -240,26 +242,41 @@ class Miner:
         self._resume()
 
     def _resume(self):
+        """Carry on from an earlier run on the same transcript (after a crash or Ctrl+C)."""
         if not self.out_path.exists():
             return
+        items = []
         for raw in self.out_path.read_text(encoding="utf-8").splitlines():
             try:
                 item = json.loads(raw)
-                n = int(item["id"][1:])
-                self.counts[item["type"]] = max(self.counts[item["type"]], n)
+                if item["type"] in self.counts:
+                    item["n"] = int(item["id"][1:])
+                    items.append(item)
             except (json.JSONDecodeError, KeyError, ValueError, TypeError):
                 continue
+        if not items:
+            return
+        size = self.path.stat().st_size if self.path.exists() else 0
+        if size < max(i.get("pos", 0) for i in items):  # these came from a different (longer) transcript
+            sys.exit(files.leftover_message(self.out_path, self.path))
+        for item in items:
+            self.counts[item["type"]] = max(self.counts[item["type"]], item.pop("n"))
             self.items.append(item)
             self.read_pos = max(self.read_pos, item.get("pos", 0))
             self.batch = max(self.batch, item.get("batch", 0))
-        if self.items:
-            print(f"Resuming: {len(self.items)} items already in {self.out_path.name}")
+        print(f"Resuming: {len(self.items)} items already in {self.out_path.name}")
 
     # --- reading the transcript -------------------------------------------------
 
     def read_new_lines(self):
         try:
             with open(self.path, "rb") as f:
+                if f.seek(0, 2) < self.read_pos:  # the transcript was replaced while running
+                    if not self.warned_shorter:
+                        print(f"  ! {self.path.name} is now shorter than what was already mined. If it was "
+                              "replaced, stop with Ctrl+C and start again.", flush=True)
+                        self.warned_shorter = True
+                    return
                 f.seek(self.read_pos)
                 data = f.read()
         except FileNotFoundError:
